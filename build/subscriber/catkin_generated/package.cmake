@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "subscriber")
+set(subscriber_MAINTAINER "status <status@todo.todo>")
+set(subscriber_DEPRECATED "")
+set(subscriber_VERSION "0.0.0")
+set(subscriber_BUILD_DEPENDS "roscpp" "turtlesim")
+set(subscriber_RUN_DEPENDS "roscpp" "turtlesim")
+set(subscriber_BUILDTOOL_DEPENDS "catkin")

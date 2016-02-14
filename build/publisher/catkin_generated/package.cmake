@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "publisher")
+set(publisher_MAINTAINER "status <status@todo.todo>")
+set(publisher_DEPRECATED "")
+set(publisher_VERSION "0.0.0")
+set(publisher_BUILD_DEPENDS "geometry_msgs" "roscpp")
+set(publisher_RUN_DEPENDS "geometry_msgs" "roscpp")
+set(publisher_BUILDTOOL_DEPENDS "catkin")

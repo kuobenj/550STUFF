@@ -1,0 +1,8 @@
+prefix=/home/status/catkin_ws/install
+
+Name: homework1
+Description: Description of homework1
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/status/catkin_ws/install/lib 
+Requires: 

@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "homework1")
+set(homework1_MAINTAINER "status <status@todo.todo>")
+set(homework1_DEPRECATED "")
+set(homework1_VERSION "0.0.0")
+set(homework1_BUILD_DEPENDS "geometry_msgs" "roscpp" "turtlesim")
+set(homework1_RUN_DEPENDS "geometry_msgs" "roscpp" "turtlesim")
+set(homework1_BUILDTOOL_DEPENDS "catkin")
