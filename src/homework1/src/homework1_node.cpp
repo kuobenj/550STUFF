@@ -13,6 +13,7 @@ static float local_omg = 0;
 #define TEST_X_COORD 2.0
 #define TEST_Y_COORD 2.0
 #define PI 3.14159265
+#define TOLERANCE 0.001
 
 void PoseCallback(const turtlesim::Pose& msg)
 {
@@ -20,14 +21,14 @@ void PoseCallback(const turtlesim::Pose& msg)
  local_y = msg.y;
  local_x = msg.x;
  local_theta = msg.theta;
- // if (local_theta > PI)
- // {
- // 	local_theta - (2*PI);
- // }
- // else if (local_theta < -(PI))
- // {
- // 	local_theta + (2*PI);
- // }
+ if (local_theta > PI)
+ {
+ 	local_theta - (2*PI);
+ }
+ else if (local_theta < -(PI))
+ {
+ 	local_theta + (2*PI);
+ }
  local_vel = msg.linear_velocity;
  local_omg = msg.angular_velocity;
  
@@ -36,14 +37,14 @@ void PoseCallback(const turtlesim::Pose& msg)
 
 int main(int argc, char **argv)
 {
- if (argc < 2)
+ if (argc < 3)
  {
  	ROS_INFO_STREAM("NOT ENOUGH ARGUMENTS");
  	return -1;
  }
 
- float y_coord = strtof(argv[0],NULL);
  float x_coord = strtof(argv[1],NULL);
+ float y_coord = strtof(argv[2],NULL);
 
  ros::init(argc, argv, "homework1_node");  
  ros::NodeHandle n; 
@@ -55,6 +56,9 @@ int main(int argc, char **argv)
  float heading_error;
  float my_distance;
 
+ float temp_lin_vel;
+ float temp_ang_vel;
+
  while(ros::ok()) 
  {
  geometry_msgs::Twist vel; 
@@ -62,12 +66,26 @@ int main(int argc, char **argv)
  heading_target = atan2(y_coord-local_y, x_coord-local_x);
  heading_error = local_theta - heading_target;
  my_distance = sqrt((y_coord-local_y)*(y_coord-local_y)+(x_coord-local_x)*(x_coord-local_x));
- vel.linear.x = 0.5*my_distance-0.3*local_vel; 
- vel.angular.z = -0.5*heading_error;//+0.3*local_omg;
+ // temp_ang_vel = -0.5*heading_error;//+0.3*local_omg;
+ // temp_lin_vel = 0.5*my_distance-0.3*local_vel; 
+ if (abs(heading_error) > TOLERANCE)
+ {
+ 	vel.linear.x = 0; 
+ 	vel.angular.z = -1*heading_error+0.3*local_omg;
+ }
+ else if (my_distance > TOLERANCE)
+ {
+ 	vel.linear.x = 1*my_distance-0.3*local_vel; 
+ 	vel.angular.z = -1*heading_error+0.3*local_omg;
+ }
+ else
+ 	return 0;
+
  pub.publish(vel);
  // ROS_INFO_STREAM("publishing velocity command: " << "linear (x)=" << vel.linear.x << ", angular (z)=" << vel.angular.z);  
  // ROS_INFO_STREAM("I received " << "position=(" << local_x << ", " << local_y << "), " << "orientation(RAD)=" << local_theta);
  ROS_INFO_STREAM("SPEED: " << vel.linear.x << " TURN: " << vel.angular.z << " HEADING: " << heading_target << " ANGLE: "<< local_theta << " H_ERROR: " << heading_error << " DIST: " << my_distance);
+ // ROS_INFO_STREAM("TARGET: (" << x_coord << "," << y_coord << ")SPEED: " << temp_lin_vel << " TURN: " << temp_ang_vel << " HEADING: " << heading_target << " ANGLE: "<< local_theta << " H_ERROR: " << heading_error << " DIST: " << my_distance);
  loop_rate.sleep();
  }
  return 0;
