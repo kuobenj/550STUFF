@@ -13,7 +13,8 @@ static float local_omg = 0;
 #define TEST_X_COORD 2.0
 #define TEST_Y_COORD 2.0
 #define PI 3.14159265
-#define TOLERANCE 0.001
+#define H_TOLERANCE 0.0001
+#define D_TOLERANCE 0.1
 
 void PoseCallback(const turtlesim::Pose& msg)
 {
@@ -21,11 +22,11 @@ void PoseCallback(const turtlesim::Pose& msg)
  local_y = msg.y;
  local_x = msg.x;
  local_theta = msg.theta;
- if (local_theta > PI)
+ if (local_theta >= PI)
  {
  	local_theta - (2*PI);
  }
- else if (local_theta < -(PI))
+ else if (local_theta <= -(PI))
  {
  	local_theta + (2*PI);
  }
@@ -68,15 +69,15 @@ int main(int argc, char **argv)
  my_distance = sqrt((y_coord-local_y)*(y_coord-local_y)+(x_coord-local_x)*(x_coord-local_x));
  // temp_ang_vel = -0.5*heading_error;//+0.3*local_omg;
  // temp_lin_vel = 0.5*my_distance-0.3*local_vel; 
- if (abs(heading_error) > TOLERANCE)
+ if (abs(heading_error) > H_TOLERANCE)
  {
  	vel.linear.x = 0; 
- 	vel.angular.z = -1*heading_error+0.3*local_omg;
+ 	vel.angular.z = -2*heading_error+0.3*local_omg;
  }
- else if (my_distance > TOLERANCE)
+ else if (my_distance > D_TOLERANCE)
  {
- 	vel.linear.x = 1*my_distance-0.3*local_vel; 
- 	vel.angular.z = -1*heading_error+0.3*local_omg;
+ 	vel.linear.x = 0.5*my_distance;//-0.3*local_vel; 
+ 	vel.angular.z = -0.3*heading_error+0.3*local_omg;
  }
  else
  	return 0;
