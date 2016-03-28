@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "homework2")
+set(homework2_MAINTAINER "status <status@todo.todo>")
+set(homework2_DEPRECATED "")
+set(homework2_VERSION "0.0.0")
+set(homework2_BUILD_DEPENDS "geometery_msgs" "nav_msgs" "roscpp" "rospy")
+set(homework2_RUN_DEPENDS "geometery_msgs" "nav_msgs" "roscpp" "rospy")
+set(homework2_BUILDTOOL_DEPENDS "catkin")

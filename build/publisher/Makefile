@@ -150,48 +150,6 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-publisher/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule:
-	cd /home/status/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 publisher/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule
-.PHONY : publisher/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-geometry_msgs_generate_messages_cpp: publisher/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule
-.PHONY : geometry_msgs_generate_messages_cpp
-
-# fast build rule for target.
-geometry_msgs_generate_messages_cpp/fast:
-	cd /home/status/catkin_ws/build && $(MAKE) -f publisher/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/build.make publisher/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/build
-.PHONY : geometry_msgs_generate_messages_cpp/fast
-
-# Convenience name for target.
-publisher/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule:
-	cd /home/status/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 publisher/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule
-.PHONY : publisher/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-geometry_msgs_generate_messages_lisp: publisher/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule
-.PHONY : geometry_msgs_generate_messages_lisp
-
-# fast build rule for target.
-geometry_msgs_generate_messages_lisp/fast:
-	cd /home/status/catkin_ws/build && $(MAKE) -f publisher/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/build.make publisher/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/build
-.PHONY : geometry_msgs_generate_messages_lisp/fast
-
-# Convenience name for target.
-publisher/CMakeFiles/geometry_msgs_generate_messages_py.dir/rule:
-	cd /home/status/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 publisher/CMakeFiles/geometry_msgs_generate_messages_py.dir/rule
-.PHONY : publisher/CMakeFiles/geometry_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-geometry_msgs_generate_messages_py: publisher/CMakeFiles/geometry_msgs_generate_messages_py.dir/rule
-.PHONY : geometry_msgs_generate_messages_py
-
-# fast build rule for target.
-geometry_msgs_generate_messages_py/fast:
-	cd /home/status/catkin_ws/build && $(MAKE) -f publisher/CMakeFiles/geometry_msgs_generate_messages_py.dir/build.make publisher/CMakeFiles/geometry_msgs_generate_messages_py.dir/build
-.PHONY : geometry_msgs_generate_messages_py/fast
-
-# Convenience name for target.
 publisher/CMakeFiles/publisher_node.dir/rule:
 	cd /home/status/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 publisher/CMakeFiles/publisher_node.dir/rule
 .PHONY : publisher/CMakeFiles/publisher_node.dir/rule
@@ -236,9 +194,6 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... geometry_msgs_generate_messages_cpp"
-	@echo "... geometry_msgs_generate_messages_lisp"
-	@echo "... geometry_msgs_generate_messages_py"
 	@echo "... install"
 	@echo "... install/local"
 	@echo "... install/strip"

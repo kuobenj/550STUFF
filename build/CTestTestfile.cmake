@@ -6,6 +6,7 @@
 # testing this directory and lists subdirectories to be tested as well.
 SUBDIRS(gtest)
 SUBDIRS(hello)
+SUBDIRS(homework2)
 SUBDIRS(publisher)
 SUBDIRS(homework1)
 SUBDIRS(subscriber)
