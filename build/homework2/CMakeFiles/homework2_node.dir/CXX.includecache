@@ -20,14 +20,6 @@ geometry_msgs/Twist.h
 polygon.h
 /home/status/catkin_ws/src/homework2/src/polygon.h
 
-/home/status/catkin_ws/src/homework2/src/polygon.cpp
-polygon.h
-/home/status/catkin_ws/src/homework2/src/polygon.h
-cmath
--
-stdio.h
--
-
 /home/status/catkin_ws/src/homework2/src/polygon.h
 
 /opt/ros/indigo/include/XmlRpcDecl.h

@@ -9,7 +9,7 @@ My_Polygon(){
 
 My_Polygon::
 My_Polygon(float init_x, float init_y, float init_width, float init_height){
-	printf("%f %f %f %f\n", init_x, init_y, init_width, init_height);
+	// printf("%f %f %f %f\n", init_x, init_y, init_width, init_height);
 	center_x = init_x;
 	center_y = init_y;
 	width = init_width;
@@ -38,25 +38,25 @@ My_Polygon::
 
 void
 My_Polygon::
-update_center(float new_x, float new_y){
+update_center(float new_x, float new_y, float theta){
 
 	center_x = new_x;
 	center_y = new_y;
 
-	corners[0][0] = center_x-(width/2.0);
-	corners[0][1] = center_y-(height/2.0);
+	corners[0][0] = center_x-((width/2.0)*cos(theta));
+	corners[0][1] = center_y-((height/2.0)*sin(theta));
 
-	corners[1][0] = center_x+(width/2.0);
-	corners[1][1] = center_y-(height/2.0);
+	corners[1][0] = center_x+((width/2.0)*cos(theta));
+	corners[1][1] = center_y-((height/2.0)*sin(theta));
 
-	corners[2][0] = center_x+(width/2.0);
-	corners[2][1] = center_y+(height/2.0);
+	corners[2][0] = center_x+((width/2.0)*cos(theta));
+	corners[2][1] = center_y+((height/2.0)*sin(theta));
 
-	corners[3][0] = center_x-(width/2.0);
-	corners[3][1] = center_y+(height/2.0);
+	corners[3][0] = center_x-((width/2.0)*cos(theta));
+	corners[3][1] = center_y+((height/2.0)*sin(theta));
 
-	corners[4][0] = center_x-(width/2.0);
-	corners[4][1] = center_y-(height/2.0);
+	corners[4][0] = center_x-((width/2.0)*cos(theta));
+	corners[4][1] = center_y-((height/2.0)*sin(theta));
 }
 
 float
@@ -83,10 +83,10 @@ distance_to_point(float point_x, float point_y){
 		float dot_product = vector1[0]*vector2[0]+vector1[1]*vector2[1];
 
 		//normalize
+		//pseudo code is wrong
+		float magnitude_sq = vector1[0]*vector1[0]+vector1[1]*vector1[1];
 
-		float magnitude = sqrt(vector2[0]*vector2[0]+vector2[1]*vector2[1]);
-
-		dot_product = dot_product/magnitude;
+		dot_product = dot_product/magnitude_sq;
 
 		
 
@@ -97,11 +97,13 @@ distance_to_point(float point_x, float point_y){
 		else
 			dist = sqrt(vector2[0]*vector2[0]+vector2[1]*vector2[1] - dot_product * (vector1[0]*vector1[0]+vector1[1]*vector1[1]));
 
-		if (dist < min_dist)
+		// printf("point: (%f,%f) corner1: (%f,%f) corner2: (%f,%f) dist: %f\n", point_x, point_y, this->corners[i][0], this->corners[i][1], this->corners[i+1][0], this->corners[i+1][1], dist);
+
+		if ((dist < min_dist) && (isnan(dist) == 0))
 			min_dist = dist;
 	}
 
-	return dist;
+	return min_dist;
 }
 
 void 
@@ -131,12 +133,12 @@ closest_point(float point_x, float point_y, float &closest_x, float &closest_y)
 		float dot_product = vector1[0]*vector2[0]+vector1[1]*vector2[1];
 
 		//normalize
+		//pseudo code is wrong
+		float magnitude_sq = vector1[0]*vector1[0]+vector1[1]*vector1[1];
 
-		float magnitude = sqrt(vector2[0]*vector2[0]+vector2[1]*vector2[1]);
-
-		dot_product = dot_product/magnitude;
-
+		dot_product = dot_product/magnitude_sq;
 		
+		// printf("dot_product %f\n", dot_product);		
 
 		if (dot_product < 0)
 		{
@@ -157,11 +159,14 @@ closest_point(float point_x, float point_y, float &closest_x, float &closest_y)
 			close_y = this->corners[i][1] + dot_product*vector1[1];
 		}
 
-		if (dist < min_dist)
+		if ((dist < min_dist) && (isnan(dist) == 0))
 		{
 			min_dist = dist;
 			closest_x = close_x;
 			closest_y = close_y;
 		}
+
+		// printf("dist %f\n", dist);
+		// printf("min_dist %f\n", min_dist);
 	}
 }

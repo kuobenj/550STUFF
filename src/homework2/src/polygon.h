@@ -13,7 +13,7 @@ public:
 	My_Polygon(float center_x, float center_y, float width, float height);
 	~My_Polygon();
 
-	void update_center(float new_x, float new_y);
+	void update_center(float new_x, float new_y, float theta);
 
 	float distance_to_point(float point_x, float point_y);
 
