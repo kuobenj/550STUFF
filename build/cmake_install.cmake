@@ -120,6 +120,7 @@ IF(NOT CMAKE_INSTALL_LOCAL_ONLY)
   INCLUDE("/home/status/catkin_ws/build/hello/cmake_install.cmake")
   INCLUDE("/home/status/catkin_ws/build/homework2/cmake_install.cmake")
   INCLUDE("/home/status/catkin_ws/build/publisher/cmake_install.cmake")
+  INCLUDE("/home/status/catkin_ws/build/homework3/cmake_install.cmake")
   INCLUDE("/home/status/catkin_ws/build/homework1/cmake_install.cmake")
   INCLUDE("/home/status/catkin_ws/build/subscriber/cmake_install.cmake")
 

@@ -7,9 +7,7 @@ project(homework3)
 find_package(catkin REQUIRED COMPONENTS
   fcl REQUIRED
   actionlib
-  arm_1
   nav_msgs
-  pr2_controllers_msgs
   roscpp
   rospy
   sensor_msgs
@@ -137,11 +135,12 @@ include_directories(
 # add_dependencies(homework3 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(homework3_node src/homework3_node.cpp)
+add_executable(homework3_node src/homework3_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(homework3_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(homework3_node nav_msgs_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(homework3_node

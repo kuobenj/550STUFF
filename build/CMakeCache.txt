@@ -251,14 +251,23 @@ _CATKIN_GTEST_INCLUDE:FILEPATH=/usr/include/gtest/gtest.h
 //Path to a file.
 _CATKIN_GTEST_SRC:FILEPATH=/usr/src/gtest/src/gtest.cc
 
+//The directory containing a CMake configuration file for actionlib.
+actionlib_DIR:PATH=/opt/ros/indigo/share/actionlib/cmake
+
 //The directory containing a CMake configuration file for actionlib_msgs.
 actionlib_msgs_DIR:PATH=/opt/ros/indigo/share/actionlib_msgs/cmake
+
+//The directory containing a CMake configuration file for arm_1.
+arm_1_DIR:PATH=arm_1_DIR-NOTFOUND
 
 //The directory containing a CMake configuration file for catkin.
 catkin_DIR:PATH=/opt/ros/indigo/share/catkin/cmake
 
 //The directory containing a CMake configuration file for cpp_common.
 cpp_common_DIR:PATH=/opt/ros/indigo/share/cpp_common/cmake
+
+//The directory containing a CMake configuration file for fcl.
+fcl_DIR:PATH=/opt/ros/indigo/share/fcl/cmake
 
 //The directory containing a CMake configuration file for gencpp.
 gencpp_DIR:PATH=/opt/ros/indigo/share/gencpp/cmake
@@ -321,6 +330,12 @@ homework2_BINARY_DIR:STATIC=/home/status/catkin_ws/build/homework2
 //Value Computed by CMake
 homework2_SOURCE_DIR:STATIC=/home/status/catkin_ws/src/homework2
 
+//Value Computed by CMake
+homework3_BINARY_DIR:STATIC=/home/status/catkin_ws/build/homework3
+
+//Value Computed by CMake
+homework3_SOURCE_DIR:STATIC=/home/status/catkin_ws/src/homework3
+
 //Path to a library.
 lib:FILEPATH=/opt/ros/indigo/lib/libxmlrpcpp.so
 
@@ -329,6 +344,9 @@ message_runtime_DIR:PATH=/opt/ros/indigo/share/message_runtime/cmake
 
 //The directory containing a CMake configuration file for nav_msgs.
 nav_msgs_DIR:PATH=/opt/ros/indigo/share/nav_msgs/cmake
+
+//The directory containing a CMake configuration file for pr2_controllers_msgs.
+pr2_controllers_msgs_DIR:PATH=pr2_controllers_msgs_DIR-NOTFOUND
 
 //Value Computed by CMake
 publisher_BINARY_DIR:STATIC=/home/status/catkin_ws/build/publisher
@@ -357,6 +375,9 @@ rospy_DIR:PATH=/opt/ros/indigo/share/rospy/cmake
 //The directory containing a CMake configuration file for rostime.
 rostime_DIR:PATH=/opt/ros/indigo/share/rostime/cmake
 
+//The directory containing a CMake configuration file for sensor_msgs.
+sensor_msgs_DIR:PATH=/opt/ros/indigo/share/sensor_msgs/cmake
+
 //The directory containing a CMake configuration file for std_msgs.
 std_msgs_DIR:PATH=/opt/ros/indigo/share/std_msgs/cmake
 
@@ -368,6 +389,9 @@ subscriber_BINARY_DIR:STATIC=/home/status/catkin_ws/build/subscriber
 
 //Value Computed by CMake
 subscriber_SOURCE_DIR:STATIC=/home/status/catkin_ws/src/subscriber
+
+//The directory containing a CMake configuration file for trajectory_msgs.
+trajectory_msgs_DIR:PATH=/opt/ros/indigo/share/trajectory_msgs/cmake
 
 //The directory containing a CMake configuration file for turtlesim.
 turtlesim_DIR:PATH=/opt/ros/indigo/share/turtlesim/cmake
@@ -477,7 +501,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=7
+CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=8
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

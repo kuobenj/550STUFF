@@ -1,0 +1,8 @@
+prefix=/home/status/catkin_ws/devel
+
+Name: homework3
+Description: Description of homework3
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/status/catkin_ws/devel/lib 
+Requires: 
