@@ -17,12 +17,12 @@
 
 #define PI 3.14159
 
-#define RRT_STEP_SIZE 0.1
+#define RRT_STEP_SIZE 0.001
 #define NUM_OBS 12
 #define NUM_DRIVE_RRT 10000
-#define NUM_ARM_RRT 1000
-#define GOAL_MAX_DIST 0.1
-// #define SELECT_ARM
+#define NUM_ARM_RRT 10000
+#define GOAL_MAX_DIST 0.01
+#define SELECT_ARM
 
 #define BASE_X_OFFSET (-0.0014)
 #define BASE_Y_OFFSET (0.0)
@@ -345,15 +345,94 @@ bool transitionValid(Vec3f* source, Vec3f* state)
 		result.getContacts(contacts);
 		total_contacts += contacts.size();
 		#else
+		float /*temp_*/theta = 0.1;
+		float /*temp_*/d = 0.1;
+		float /*temp_*/a = 0.1;
+		float /*temp_*/alpha = 0.1;
 		Transform3f temp_tf;
-	 	tf_base_combined.setTranslation(Vec3f(BASE_X_OFFSET,BASE_Y_OFFSET,BASE_Z_OFFSET));
+		Transform3f temp_tf_accum;
+		Vec3f test_angles = (*state/10.0*j)+(*source/10.0*(10-j));
+		// Vec3f test_angles = Vec3f(0.628-PI/2,1.964,-1.047);
+		//sudden revelation remember to do the box offset first
+		// temp_tf.setRotation(Matrix3f(cos(theta),-sin(theta),0.0,sin(theta),cos(theta),0.0,0.0,0.0,1.0));
+		// temp_tf_accum = temp_tf_accum*temp_tf;
+		// temp_tf.setTranslation(Vec3f(0.0,0.0,d));
+		// temp_tf_accum = temp_tf_accum*temp_tf;
+		// temp_tf.setTranslation(Vec3f(a,0.0,0.0));
+		// temp_tf_accum = temp_tf_accum*temp_tf;
+		// temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(alpha),-sin(alpha),0.0,sin(alpha),cos(alpha)));
+		// temp_tf_accum = temp_tf_accum*temp_tf;
+		temp_tf_accum.setIdentity();
+	 	// tf_base_combined.setTranslation(Vec3f(BASE_X_OFFSET,BASE_Y_OFFSET,BASE_Z_OFFSET));
+	 	tf_arm_2.setTranslation(Vec3f(ARM_2_X_OFFSET,ARM_2_Y_OFFSET,ARM_2_Z_OFFSET));
+	 	tf_arm_3.setTranslation(Vec3f(ARM_3_X_OFFSET,ARM_3_Y_OFFSET,ARM_3_Z_OFFSET));
+	 	tf_arm_4.setTranslation(Vec3f(ARM_4_X_OFFSET,ARM_4_Y_OFFSET,ARM_4_Z_OFFSET));
+
+	 // 	temp_tf.setRotation(Matrix3f(cos(0.0),-sin(0.0),0.0,sin(0.0),cos(0.0),0.0,0.0,0.0,1.0));
+		// temp_tf_accum *= temp_tf;
+		temp_tf.setIdentity();
+		temp_tf.setTranslation(Vec3f(0.0,0.0, 0.046+0.084+0.115));
+		temp_tf_accum *= temp_tf;
+		temp_tf.setIdentity();
+		temp_tf.setTranslation(Vec3f(0.143+0.024,0.0,0.0));
+		temp_tf_accum *= temp_tf;
+		temp_tf.setIdentity();
+		temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(PI),-sin(PI),0.0,sin(PI),cos(PI)));
+		temp_tf_accum *= temp_tf;
+		// temp_tf.setRotation(Matrix3f(cos(0.0),-sin(0.0),0.0,sin(0.0),cos(0.0),0.0,0.0,0.0,1.0));
+		// temp_tf_accum *= temp_tf;
+		// temp_tf.setTranslation(Vec3f(0.0,0.0, 0.046+0.084+0.115));
+		// temp_tf_accum *= temp_tf;
+		temp_tf.setIdentity();
+		temp_tf.setTranslation(Vec3f(0.033,0.0,0.0));
+		temp_tf_accum *= temp_tf;
+		temp_tf.setIdentity();
+		temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(PI/2.0),-sin(PI/2.0),0.0,sin(PI/2.0),cos(PI/2.0)));
+		temp_tf_accum *= temp_tf;
+		tf_arm_1 *= temp_tf_accum;
+
+		temp_tf.setIdentity();
+		temp_tf.setRotation(Matrix3f(cos(test_angles[0]-(PI/2)),-sin(test_angles[0]-(PI/2)),0.0,sin(test_angles[0]-(PI/2)),cos(test_angles[0]-(PI/2)),0.0,0.0,0.0,1.0));
+		temp_tf_accum = temp_tf_accum*temp_tf;
+		// temp_tf.setTranslation(Vec3f(0.0,0.0,d));
+		// temp_tf_accum = temp_tf_accum*temp_tf;
+		temp_tf.setIdentity();
+		temp_tf.setTranslation(Vec3f( 0.155,0.0,0.0));
+		temp_tf_accum = temp_tf_accum*temp_tf;
+		// temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(alpha),-sin(alpha),0.0,sin(alpha),cos(alpha)));
+		// temp_tf_accum = temp_tf_accum*temp_tf;
+		tf_arm_2 *= temp_tf_accum;
+
+		temp_tf.setIdentity();
+		temp_tf.setRotation(Matrix3f(cos(test_angles[1]),-sin(test_angles[1]),0.0,sin(test_angles[1]),cos(test_angles[1]),0.0,0.0,0.0,1.0));
+		temp_tf_accum = temp_tf_accum*temp_tf;
+		// temp_tf.setTranslation(Vec3f(0.0,0.0,d));
+		// temp_tf_accum = temp_tf_accum*temp_tf;
+		temp_tf.setIdentity();
+		temp_tf.setTranslation(Vec3f(0.135,0.0,0.0));
+		temp_tf_accum = temp_tf_accum*temp_tf;
+		// temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(alpha),-sin(alpha),0.0,sin(alpha),cos(alpha)));
+		// temp_tf_accum = temp_tf_accum*temp_tf;
+		tf_arm_3 *= temp_tf_accum;
+
+		temp_tf.setIdentity();
+		temp_tf.setRotation(Matrix3f(cos(test_angles[2]),-sin(test_angles[2]),0.0,sin(test_angles[2]),cos(test_angles[2]),0.0,0.0,0.0,1.0));
+		temp_tf_accum = temp_tf_accum*temp_tf;
+		// temp_tf.setTranslation(Vec3f(0.0,0.0,d));
+		// temp_tf_accum = temp_tf_accum*temp_tf;
+		temp_tf.setIdentity();
+		temp_tf.setTranslation(Vec3f(0.1136,0.0,0.0));
+		temp_tf_accum = temp_tf_accum*temp_tf;
+		temp_tf.setIdentity();
+		temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(-PI/2),-sin(-PI/2),0.0,sin(-PI/2),cos(-PI/2)));
+		temp_tf_accum = temp_tf_accum*temp_tf;
+		tf_arm_4 *= temp_tf_accum;
+
 
 	  	CollisionObject co1(obs_5_1, tf_obs_5_1);
 	  	CollisionObject co2(obs_5_2, tf_obs_5_2);
 	  	CollisionObject co3(obs_5_3, tf_obs_5_3);
 	  	CollisionObject co4(obs_5_4, tf_obs_5_4);
-
-	  	tf_arm_1 = tf_arm_1*temp_tf;
 
 	  	// CollisionObject robot_arm_1(arm_1, tf_arm_1);
 	  	CollisionObject robot_arm_2(arm_2, tf_arm_2);
@@ -428,7 +507,11 @@ bool transitionValid(Vec3f* source, Vec3f* state)
 		// cout << contacts.size() << " contacts found" << endl;
 		if (total_contacts != 0)
 		{
-			// ROS_INFO_STREAM("COLLISION DETECTED! \n");
+			ROS_INFO_STREAM("COLLISION DETECTED! # of Contacts: " << total_contacts	 << " \n");
+			if (total_contacts < 6)
+			{
+				return true;
+			}
 			return false;
 		}
 	}
@@ -499,11 +582,13 @@ int main(int argc, char **argv)
   	// tf_arm_2.setTranslation(Vec3f(3.0,5.0,0.375));
   	// tf_arm_3.setTranslation(Vec3f(0,3.0,0.25));
   	// tf_arm_4.setTranslation(Vec3f(2.5,-1.25,0.25)); 
+  	// while(1)
+  	// 	ROS_INFO_STREAM("random angles" << random_float_angle());
 
   	drive_source = new Vec3f(0.0,0.0,0.0);
   	drive_dest = new Vec3f(5.0,5.0,0.0);
-  	arm_source = new Vec3f(0.0,0.0,0.0);
-  	arm_dest = new Vec3f(0.628,1.964,-1.047);
+  	arm_source = new Vec3f(0.0-(PI/2),0.0,0.0);
+  	arm_dest = new Vec3f(0.628-(PI/2),1.964,-1.047);
 
   	ROS_INFO_STREAM("drive_dest" << drive_dest << "(" << (*drive_dest)[0] <<","<< (*drive_dest)[1] << ")"<<" \n");
   	ROS_INFO_STREAM("drive_source" << drive_source <<" \n");
@@ -546,21 +631,21 @@ int main(int argc, char **argv)
     _nodes[node_count] = root;
     node_count++;
 
-	for (int i = 0; i < NUM_DRIVE_RRT; i++)
+	for (int i = 0; i < NUM_ARM_RRT; i++)
 	{
 		Node* newNode = NULL;
 		while(newNode == NULL){
 			newNode = extend(new Vec3f(random_float_angle(), random_float_angle(),random_float_angle()));
 		}
 
-    	if (simple_dist_drive(newNode->state(),drive_dest) < GOAL_MAX_DIST)
+    	if (simple_dist_arm(newNode->state(),drive_dest) < GOAL_MAX_DIST)
     	{
         	pathfound = true;
         	new_dest = newNode;
         	break;
     	}
 
-    // ROS_INFO_STREAM("Node # " << i << " \n");
+    ROS_INFO_STREAM("Node # " << i << " \n");
 	}
 
 	#endif
@@ -572,7 +657,7 @@ int main(int argc, char **argv)
 
  	ROS_INFO_STREAM("Pathfound " << pathfound << " \n");
 
-	// return 0;
+	return 0;
 	Node* curr = _nodes[0];
   	Node* next = new_dest;
   	int next_point_flag = 0;
