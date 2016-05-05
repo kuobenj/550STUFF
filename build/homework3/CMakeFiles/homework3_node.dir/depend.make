@@ -4,6 +4,9 @@
 homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /home/status/catkin_ws/src/homework3/src/homework3_node.cpp
 homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/XmlRpcDecl.h
 homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/XmlRpcValue.h
+homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/brics_actuator/JointPositions.h
+homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/brics_actuator/JointValue.h
+homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/brics_actuator/Poison.h
 homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/ccd/ccd.h
 homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/ccd/compiler.h
 homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/ccd/config.h
@@ -105,4 +108,6 @@ homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indig
 homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/ros/wall_timer_options.h
 homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/rosconsole/macros_generated.h
 homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/std_msgs/Header.h
+homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/trajectory_msgs/JointTrajectory.h
+homework3/CMakeFiles/homework3_node.dir/src/homework3_node.cpp.o: /opt/ros/indigo/include/trajectory_msgs/JointTrajectoryPoint.h
 

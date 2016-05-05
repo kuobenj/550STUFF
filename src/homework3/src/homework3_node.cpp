@@ -2,7 +2,7 @@
 #include <string>
 #include "ros/ros.h"
 #include "nav_msgs/Odometry.h"
-#include <geometry_msgs/Twist.h> 
+#include <geometry_msgs/Twist.h>
 #include <fcl/shape/geometric_shapes.h>
 #include <fcl/shape/geometric_shapes_utility.h>
 #include <fcl/narrowphase/narrowphase.h>
@@ -15,14 +15,31 @@
 #include <stdlib.h>
 #include <iostream>
 
+// #include <pr2_controllers_msgs/JointTrajectoryAction.h>
+// #include <actionlib/client/simple_action_client.h>
+//https://github.com/wnowak/youbot_ros_samples/blob/master/youbot_ros_hello_world/src/youbot_ros_hello_world.cpp
+#include "boost/units/systems/si.hpp"
+#include "boost/units/io.hpp"
+#include "brics_actuator/JointPositions.h"
+
+#include <trajectory_msgs/JointTrajectory.h>
+#include <std_msgs/Header.h>
+
+// typedef actionlib::SimpleActionClient< pr2_controllers_msgs::JointTrajectoryAction > TrajClient;
+
 #define PI 3.14159
 
-#define RRT_STEP_SIZE 0.001
+// #define RRT_STEP_SIZE 0.1
+// #define GOAL_MAX_DIST 0.1
 #define NUM_OBS 12
 #define NUM_DRIVE_RRT 10000
 #define NUM_ARM_RRT 10000
-#define GOAL_MAX_DIST 0.01
+
+// ARM PARAMETERS
 #define SELECT_ARM
+#define RRT_STEP_SIZE 0.07
+#define GOAL_MAX_DIST 0.08
+
 
 #define BASE_X_OFFSET (-0.0014)
 #define BASE_Y_OFFSET (0.0)
@@ -41,6 +58,12 @@
 #define ARM_4_X_OFFSET (0.0869)
 #define ARM_4_Y_OFFSET (0.0)
 #define ARM_4_Z_OFFSET (0.0)
+
+#define JOINT_1_OFFSET (2.95)
+#define JOINT_2_OFFSET (1.13)
+#define JOINT_3_OFFSET (-2.55)
+#define JOINT_4_OFFSET (1.79)
+#define JOINT_5_OFFSET (2.875)
 
 
 using namespace std;
@@ -246,9 +269,9 @@ bool transitionValid(Vec3f* source, Vec3f* state)
   	boost::shared_ptr<Box> wall_3(new Box(8.0,0.5,0.5));
   	boost::shared_ptr<Box> wall_4(new Box(0.5,0.5,8.0));
   	boost::shared_ptr<Box> obs_5_1(new Box(0.4,0.4,0.2));
-  	boost::shared_ptr<Box> obs_5_2(new Box(0.05,0.05,0.15));
-  	boost::shared_ptr<Box> obs_5_3(new Box(0.05,0.05,0.15));
-  	boost::shared_ptr<Box> obs_5_4(new Box(0.25,0.25,0.15));
+  	boost::shared_ptr<Box> obs_5_2(new Box(0.05+0.01,0.05+0.01,0.15+0.01));
+  	boost::shared_ptr<Box> obs_5_3(new Box(0.05+0.01,0.05+0.01,0.15+0.01));
+  	boost::shared_ptr<Box> obs_5_4(new Box(0.25+0.01,0.25+0.01,0.15+0.01));
 
   	Transform3f tf_obs_1;
   	Transform3f tf_obs_2;
@@ -289,13 +312,13 @@ bool transitionValid(Vec3f* source, Vec3f* state)
  	Transform3f tf_arm_3;
  	Transform3f tf_arm_4;
 
-  	for (int j = 0; j < 9; j++)
+  	for (int j = 0; j < 19; j++)
   	{
   		int total_contacts = 0;
 	  	vector<Contact> contacts;
 
 	  	#ifndef SELECT_ARM
-	 	tf_base_combined.setTranslation((*state/10.0*j)+(*source/10.0*(10-j))+Vec3f(BASE_X_OFFSET,BASE_Y_OFFSET,BASE_Z_OFFSET));
+	 	tf_base_combined.setTranslation((*state/20.0*j)+(*source/20.0*(20-j))+Vec3f(BASE_X_OFFSET,BASE_Y_OFFSET,BASE_Z_OFFSET));
 
 	  	CollisionObject co1(obs_1, tf_obs_1);
 	  	CollisionObject co2(obs_2, tf_obs_1);
@@ -345,14 +368,17 @@ bool transitionValid(Vec3f* source, Vec3f* state)
 		result.getContacts(contacts);
 		total_contacts += contacts.size();
 		#else
-		float /*temp_*/theta = 0.1;
-		float /*temp_*/d = 0.1;
-		float /*temp_*/a = 0.1;
-		float /*temp_*/alpha = 0.1;
+		// float /*temp_*/theta = 0.1;
+		// float /*temp_*/d = 0.1;
+		// float /*temp_*/a = 0.1;
+		// float /*temp_*/alpha = 0.1;
 		Transform3f temp_tf;
 		Transform3f temp_tf_accum;
-		Vec3f test_angles = (*state/10.0*j)+(*source/10.0*(10-j));
-		// Vec3f test_angles = Vec3f(0.628-PI/2,1.964,-1.047);
+		Vec3f test_angles = (*state/10.0*j)+(*source/10.0*(10-j));//+Vec3f(0.0-(PI/2),0.0,0.0);
+		// Vec3f test_angles = Vec3f(0.628-(PI/2.0),1.964,-1.047);
+		// Vec3f test_angles = Vec3f(0.628,1.964,-1.047);
+		// Vec3f test_angles = Vec3f(0.0-(PI/2),0.0,0.0);
+		// Vec3f test_angles = Vec3f(0.0,0.0,0.0);
 		//sudden revelation remember to do the box offset first
 		// temp_tf.setRotation(Matrix3f(cos(theta),-sin(theta),0.0,sin(theta),cos(theta),0.0,0.0,0.0,1.0));
 		// temp_tf_accum = temp_tf_accum*temp_tf;
@@ -379,6 +405,7 @@ bool transitionValid(Vec3f* source, Vec3f* state)
 		temp_tf.setIdentity();
 		temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(PI),-sin(PI),0.0,sin(PI),cos(PI)));
 		temp_tf_accum *= temp_tf;
+
 		// temp_tf.setRotation(Matrix3f(cos(0.0),-sin(0.0),0.0,sin(0.0),cos(0.0),0.0,0.0,0.0,1.0));
 		// temp_tf_accum *= temp_tf;
 		// temp_tf.setTranslation(Vec3f(0.0,0.0, 0.046+0.084+0.115));
@@ -389,10 +416,12 @@ bool transitionValid(Vec3f* source, Vec3f* state)
 		temp_tf.setIdentity();
 		temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(PI/2.0),-sin(PI/2.0),0.0,sin(PI/2.0),cos(PI/2.0)));
 		temp_tf_accum *= temp_tf;
-		tf_arm_1 *= temp_tf_accum;
+		tf_arm_1 = temp_tf_accum*tf_arm_1;
 
 		temp_tf.setIdentity();
-		temp_tf.setRotation(Matrix3f(cos(test_angles[0]-(PI/2)),-sin(test_angles[0]-(PI/2)),0.0,sin(test_angles[0]-(PI/2)),cos(test_angles[0]-(PI/2)),0.0,0.0,0.0,1.0));
+		// temp_tf.setRotation(Matrix3f(cos(test_angles[0]-(PI/2)),-sin(test_angles[0]-(PI/2)),0.0,sin(test_angles[0]-(PI/2)),cos(test_angles[0]-(PI/2)),0.0,0.0,0.0,1.0));
+		temp_tf.setRotation(Matrix3f(cos(test_angles[0]+(PI/2)),-sin(test_angles[0]+(PI/2)),0.0,sin(test_angles[0]+(PI/2)),cos(test_angles[0]+(PI/2)),0.0,0.0,0.0,1.0));
+		// temp_tf.setRotation(Matrix3f(cos(test_angles[0]),-sin(test_angles[0]),0.0,sin(test_angles[0]),cos(test_angles[0]),0.0,0.0,0.0,1.0));
 		temp_tf_accum = temp_tf_accum*temp_tf;
 		// temp_tf.setTranslation(Vec3f(0.0,0.0,d));
 		// temp_tf_accum = temp_tf_accum*temp_tf;
@@ -401,7 +430,7 @@ bool transitionValid(Vec3f* source, Vec3f* state)
 		temp_tf_accum = temp_tf_accum*temp_tf;
 		// temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(alpha),-sin(alpha),0.0,sin(alpha),cos(alpha)));
 		// temp_tf_accum = temp_tf_accum*temp_tf;
-		tf_arm_2 *= temp_tf_accum;
+		tf_arm_2 = temp_tf_accum * tf_arm_2;
 
 		temp_tf.setIdentity();
 		temp_tf.setRotation(Matrix3f(cos(test_angles[1]),-sin(test_angles[1]),0.0,sin(test_angles[1]),cos(test_angles[1]),0.0,0.0,0.0,1.0));
@@ -413,7 +442,7 @@ bool transitionValid(Vec3f* source, Vec3f* state)
 		temp_tf_accum = temp_tf_accum*temp_tf;
 		// temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(alpha),-sin(alpha),0.0,sin(alpha),cos(alpha)));
 		// temp_tf_accum = temp_tf_accum*temp_tf;
-		tf_arm_3 *= temp_tf_accum;
+		tf_arm_3 = temp_tf_accum * tf_arm_3;
 
 		temp_tf.setIdentity();
 		temp_tf.setRotation(Matrix3f(cos(test_angles[2]),-sin(test_angles[2]),0.0,sin(test_angles[2]),cos(test_angles[2]),0.0,0.0,0.0,1.0));
@@ -426,8 +455,18 @@ bool transitionValid(Vec3f* source, Vec3f* state)
 		temp_tf.setIdentity();
 		temp_tf.setRotation(Matrix3f(1.0,0.0,0.0,0.0,cos(-PI/2),-sin(-PI/2),0.0,sin(-PI/2),cos(-PI/2)));
 		temp_tf_accum = temp_tf_accum*temp_tf;
-		tf_arm_4 *= temp_tf_accum;
+		tf_arm_4 = temp_tf_accum *tf_arm_4;
+		// ROS_INFO_STREAM("Rotation Matrix\n");
+		// ROS_INFO_STREAM("[" << temp_tf_accum.getRotation()(0,0) << " " << temp_tf_accum.getRotation()(0,1) << " " << temp_tf_accum.getRotation()(0,2) << "]\n");
+		// ROS_INFO_STREAM("[" << temp_tf_accum.getRotation()(1,0) << " " << temp_tf_accum.getRotation()(1,1) << " " << temp_tf_accum.getRotation()(1,2) << "]\n");
+		// ROS_INFO_STREAM("[" << temp_tf_accum.getRotation()(2,0) << " " << temp_tf_accum.getRotation()(2,1) << " " << temp_tf_accum.getRotation()(2,2) << "]\n");
+		// ROS_INFO_STREAM("Translation: "<<  temp_tf_accum.getTranslation()[0] << "," <<  temp_tf_accum.getTranslation()[1] << "," <<  temp_tf_accum.getTranslation()[2] << "\n");
 
+		// ROS_INFO_STREAM("Rotation Matrix\n");
+		// ROS_INFO_STREAM("[" << tf_arm_4.getRotation()(0,0) << " " << tf_arm_4.getRotation()(0,1) << " " << tf_arm_4.getRotation()(0,2) << "]\n");
+		// ROS_INFO_STREAM("[" << tf_arm_4.getRotation()(1,0) << " " << tf_arm_4.getRotation()(1,1) << " " << tf_arm_4.getRotation()(1,2) << "]\n");
+		// ROS_INFO_STREAM("[" << tf_arm_4.getRotation()(2,0) << " " << tf_arm_4.getRotation()(2,1) << " " << tf_arm_4.getRotation()(2,2) << "]\n");
+		// ROS_INFO_STREAM("Translation: "<<  tf_arm_4.getTranslation()[0] << "," <<  tf_arm_4.getTranslation()[1] << "," <<  tf_arm_4.getTranslation()[2] << "\n");
 
 	  	CollisionObject co1(obs_5_1, tf_obs_5_1);
 	  	CollisionObject co2(obs_5_2, tf_obs_5_2);
@@ -508,10 +547,10 @@ bool transitionValid(Vec3f* source, Vec3f* state)
 		if (total_contacts != 0)
 		{
 			ROS_INFO_STREAM("COLLISION DETECTED! # of Contacts: " << total_contacts	 << " \n");
-			if (total_contacts < 6)
-			{
-				return true;
-			}
+			// if (total_contacts < 6)
+			// {
+			// 	return true;
+			// }
 			return false;
 		}
 	}
@@ -549,6 +588,64 @@ Node* extend(Vec3f* target) {
     return n;
 }
 
+// create a brics actuator message with the given joint position values
+brics_actuator::JointPositions createArmPositionCommand(std::vector<double>& newPositions) {
+	int numberOfJoints = 5;
+	brics_actuator::JointPositions msg;
+
+	if (newPositions.size() < numberOfJoints)
+		return msg; // return empty message if not enough values provided
+
+	for (int i = 0; i < numberOfJoints; i++) {
+		// Set all values for one joint, i.e. time, name, value and unit
+		brics_actuator::JointValue joint;
+		joint.timeStamp = ros::Time::now();
+		joint.value = newPositions[i];
+		joint.unit = boost::units::to_string(boost::units::si::radian);
+
+		// create joint names: "arm_joint_1" to "arm_joint_5" (for 5 DoF)
+		std::stringstream jointName;
+		jointName << "arm_joint_" << (i + 1);
+		joint.joint_uri = jointName.str();
+
+		// add joint to message
+		msg.positions.push_back(joint);
+	}
+
+	return msg;
+}
+
+trajectory_msgs::JointTrajectory createArmTrajectoryCommand(std::vector<double>& newPositions) {
+	int numberOfJoints = 5;
+	trajectory_msgs::JointTrajectory msg;
+	std_msgs::Header header;
+
+	// ROS_INFO_STREAM("newPositions length: " << newPositions.size() << "\n");
+
+	if (newPositions.size() < numberOfJoints)
+		return msg; // return empty message if not enough values provided
+	
+	trajectory_msgs::JointTrajectoryPoint joint;
+	for (int i = 0; i < numberOfJoints; i++) {
+		// Set all values for one joint, i.e. time, name, value and unit
+		joint.positions.push_back(newPositions[i]);
+
+		// // create joint names: "arm_joint_1" to "arm_joint_5" (for 5 DoF)
+		std::stringstream jointName;
+		jointName << "arm_joint_" << (i + 1);
+
+		// // add joint to message
+		msg.joint_names.push_back(jointName.str());
+	}
+
+	joint.time_from_start = ros::Duration(0.0,1.0);
+
+	msg.header = header;
+	msg.points.push_back(joint);
+
+	return msg;
+}
+
 /**
  * Callback function executes when new topic data comes.
  * Task of the callback function is to print data to screen.
@@ -572,9 +669,14 @@ int main(int argc, char **argv)
   	ros::NodeHandle n;
 
  	ros::Publisher pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
+ 	ros::Publisher armPublisher = n.advertise<brics_actuator::JointPositions>("arm_1/arm_controller/position_command", 1);
+ 	ros::Publisher pub_arm = n.advertise<trajectory_msgs::JointTrajectory >("arm_1/arm_controller/command", 1);
   	ros::Subscriber sub = n.subscribe("odom", 1000, chatterCallback);
   	ros::Rate loop_rate(120);
 
+  	sleep(1);
+
+	// srand (time(NULL));
   	ROS_INFO_STREAM("Homework3 started \n");
 
   	// tf_base_combined.setTranslation(Vec3f(2.5,2.5,0.5));
@@ -587,11 +689,13 @@ int main(int argc, char **argv)
 
   	drive_source = new Vec3f(0.0,0.0,0.0);
   	drive_dest = new Vec3f(5.0,5.0,0.0);
-  	arm_source = new Vec3f(0.0-(PI/2),0.0,0.0);
-  	arm_dest = new Vec3f(0.628-(PI/2),1.964,-1.047);
+  	// arm_source = new Vec3f(0.0-(PI/2),0.0,0.0);
+  	// arm_dest = new Vec3f(0.628-(PI/2),1.964,-1.047);
+  	arm_source = new Vec3f(0.0,0.0,0.0);
+  	arm_dest = new Vec3f(0.628,1.964,-1.047);
 
-  	ROS_INFO_STREAM("drive_dest" << drive_dest << "(" << (*drive_dest)[0] <<","<< (*drive_dest)[1] << ")"<<" \n");
-  	ROS_INFO_STREAM("drive_source" << drive_source <<" \n");
+  	// ROS_INFO_STREAM("drive_dest" << drive_dest << "(" << (*drive_dest)[0] <<","<< (*drive_dest)[1] << ")"<<" \n");
+  	// ROS_INFO_STREAM("drive_source" << drive_source <<" \n");
   	// ROS_INFO_STREAM("Homework3 drive_dest" << drive_dest <<" \n");
   	// ROS_INFO_STREAM("Homework3 drive_dest" << drive_dest <<" \n");
 
@@ -638,14 +742,16 @@ int main(int argc, char **argv)
 			newNode = extend(new Vec3f(random_float_angle(), random_float_angle(),random_float_angle()));
 		}
 
-    	if (simple_dist_arm(newNode->state(),drive_dest) < GOAL_MAX_DIST)
+		ROS_INFO_STREAM("Node # " << i << " Dist from Goal: " << simple_dist_arm(newNode->state(),arm_dest) <<" \n");
+
+    	if (simple_dist_arm(newNode->state(),arm_dest) < GOAL_MAX_DIST)
     	{
         	pathfound = true;
         	new_dest = newNode;
         	break;
     	}
 
-    ROS_INFO_STREAM("Node # " << i << " \n");
+    	// ROS_INFO_STREAM("Node # " << i << " \n");
 	}
 
 	#endif
@@ -657,7 +763,7 @@ int main(int argc, char **argv)
 
  	ROS_INFO_STREAM("Pathfound " << pathfound << " \n");
 
-	return 0;
+	// return 0;
 	Node* curr = _nodes[0];
   	Node* next = new_dest;
   	int next_point_flag = 0;
@@ -674,6 +780,12 @@ int main(int argc, char **argv)
 	  	float xvel = 0.0;
   		float yvel = 0.0;
   		float omega = 0.0;
+
+  		float joint_1 = JOINT_1_OFFSET;
+  		float joint_2 = JOINT_2_OFFSET;
+  		float joint_3 = JOINT_3_OFFSET;
+  		float joint_4 = JOINT_4_OFFSET;
+  		float joint_5 = JOINT_5_OFFSET;
 
 		#ifndef SELECT_ARM
 		if (next_point_flag == 0)
@@ -705,10 +817,6 @@ int main(int argc, char **argv)
 	  			}
 	  			
 	  		}
-	  	#else
-
-	  	#endif
-
 
 	  	ROS_INFO_STREAM("velocity " << xvel << " , " << yvel << " \n");
 	  	ROS_INFO_STREAM("dist to next point : " << simple_dist_orig(local_x,local_y,(*(next->state()))[0],(*(next->state()))[1]) << " \n");
@@ -720,10 +828,81 @@ int main(int argc, char **argv)
  		// vel.angular.z = omega;
 
  		pub.publish(vel);
+	  	#else
+		// brics_actuator::JointPositions msg;
+		// std::vector<double> jointvalues(5);
+
+		// // move arm straight up. values were determined empirically
+		// ROS_INFO_STREAM("UP \n");
+		// jointvalues[0] = 2.95;
+		// jointvalues[1] = 1.05;
+		// jointvalues[2] = -2.44;
+		// jointvalues[3] = 1.73;
+		// jointvalues[4] = 2.95;
+		// msg = createArmPositionCommand(jointvalues);
+		// armPublisher.publish(msg);
+
+		// ros::Duration(5).sleep();
+
+		// // move arm back close to calibration position
+		// ROS_INFO_STREAM("DOWN \n");
+		// jointvalues[0] = 0.11;
+		// jointvalues[1] = 0.11;
+		// jointvalues[2] = -0.11;
+		// jointvalues[3] = 0.11;
+		// jointvalues[4] = 0.111;
+		// msg = createArmPositionCommand(jointvalues);
+		// armPublisher.publish(msg);
+
+		// ros::Duration(2).sleep();
+  		next = new_dest;
+  		while(next->parent() != curr)
+  			next = next->parent();
+
+		trajectory_msgs::JointTrajectory msg;
+		std::vector<double> jointvalues(5);
+
+		// jointvalues[0] = 2.95;
+		// jointvalues[1] = 1.05;
+		// jointvalues[2] = -2.44;
+		// jointvalues[3] = 1.73;
+		// jointvalues[4] = 2.95;
+
+		// jointvalues[0] = 0.0;
+		// jointvalues[1] = 0.0;
+		// jointvalues[2] = 0.0;
+		// jointvalues[3] = 0.0;
+		// jointvalues[4] = 0.0;
+
+		jointvalues[0] = JOINT_1_OFFSET;
+		jointvalues[1] = (*(next->state()))[0]+JOINT_2_OFFSET;
+		jointvalues[2] = (*(next->state()))[1]+JOINT_3_OFFSET;
+		jointvalues[3] = (*(next->state()))[2]+JOINT_4_OFFSET;
+		jointvalues[4] = JOINT_5_OFFSET;
+
+		// jointvalues[0] = JOINT_1_OFFSET;
+		// jointvalues[1] = JOINT_2_OFFSET-(PI/2);
+		// jointvalues[2] = JOINT_3_OFFSET;
+		// jointvalues[3] = JOINT_4_OFFSET;
+		// jointvalues[4] = JOINT_5_OFFSET;
+
+		msg = createArmTrajectoryCommand(jointvalues);
+		pub_arm.publish(msg);
+
+		curr = next;
+		ROS_INFO_STREAM("ON TO THE NEXT POINT \n");
+		ROS_INFO_STREAM("Last Point:[" << jointvalues[0] << "," << jointvalues[1] << "," << jointvalues[2] << "," << jointvalues[3] << "," << jointvalues[4] << "] \n");
+
+		ros::Duration(1).sleep();
+		// ros::Duration(0,100000000).sleep();
+
+	  	#endif
+
 
  		loop_rate.sleep();
 
- 		// temp_shit++;
+ 		temp_shit++;
+ 		ROS_INFO_STREAM("LOOP COUNT: " << temp_shit << " \n");
  		// if (temp_shit > 10)
  		// {
  		// 	return 0;
